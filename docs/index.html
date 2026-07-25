@@ -1,0 +1,378 @@
+<!doctype html>
+<!-- BR-DE-44: <html lang="ja"> / WCAG AA コントラスト / alt 相当 / フォーカスリング維持 -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClimbAI を入手する</title>
+<!--
+  BR-DE-36: このページは単一 HTML ファイルで完結する。
+  外部 CSS / JS / Web フォント / 外部画像への参照を持たない。
+  唯一の外部通信は、下部 <script> 内の GitHub API（api.github.com）への fetch のみ（BR-DE-41）。
+-->
+<style>
+  /* コントラスト（WCAG AA: 本文4.5:1以上・大きな文字/UI 3:1以上）採用値の記録 — BR-DE-44
+     本文 #1a1a1a / 背景 #ffffff        = 17.40:1
+     補助文 #4b5563 / 背景 #ffffff      = 7.56:1
+     ボタン文字 #ffffff / ボタン背景 #1d4ed8 = 6.70:1
+     見出し #0f172a / 淡背景 #f8fafc     = 17.06:1
+     強調枠見出し #166534 / 淡緑背景 #f0fdf4 = 6.81:1
+     注意文 #b45309 / 淡黄背景 #fffbeb   = 4.84:1
+  */
+  :root {
+    --fg: #1a1a1a;
+    --muted: #4b5563;
+    --bg: #ffffff;
+    --panel-bg: #f8fafc;
+    --panel-fg: #0f172a;
+    --border: #e2e8f0;
+    --accent: #1d4ed8;
+    --accent-fg: #ffffff;
+    --primary-border: #166534;
+    --primary-bg: #f0fdf4;
+    --primary-fg: #166534;
+    --notice-bg: #fffbeb;
+    --notice-fg: #b45309;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN",
+      "Hiragino Sans", Meiryo, sans-serif; /* BR-DE-36: system-ui 系フォントスタックのみ・Web フォント不使用 */
+    line-height: 1.7;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+  }
+
+  header#intro h1 {
+    font-size: 1.75rem;
+    margin: 0 0 8px;
+    color: var(--panel-fg);
+  }
+
+  header#intro p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 28px;
+  }
+
+  section {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    background: var(--panel-bg);
+  }
+
+  section h2 {
+    margin: 0 0 12px;
+    font-size: 1.25rem;
+    color: var(--panel-fg);
+  }
+
+  /* W-7: 強調は視覚的な順序・枠線・見出しの強さで行い、display:none で消さない（BR-DE-37） */
+  section.is-primary {
+    border-color: var(--primary-border);
+    border-width: 2px;
+    background: var(--primary-bg);
+  }
+
+  section.is-primary h2 {
+    color: var(--primary-fg);
+  }
+
+  .version-label {
+    font-size: 0.9rem;
+    color: var(--muted);
+    min-height: 1.4em;
+  }
+
+  .notice-inline {
+    font-size: 0.9rem;
+    color: var(--notice-fg);
+    min-height: 0;
+  }
+
+  .notice-inline:empty {
+    display: none;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    text-decoration: none;
+    font-weight: 600;
+    margin: 4px 0 16px;
+  }
+
+  .button:hover {
+    background: #1e40af;
+  }
+
+  /* BR-DE-44: フォーカスリングを打ち消さない。outline:none は書かず、:focus-visible で明示的に強調する */
+  a:focus-visible,
+  .button:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+  }
+
+  ol {
+    margin: 0;
+    padding-left: 1.4em;
+  }
+
+  ol li + li {
+    margin-top: 8px;
+  }
+
+  .pending-text {
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  #qr {
+    text-align: center;
+  }
+
+  #qr .qr-svg-wrap {
+    background: #ffffff;
+    display: inline-block;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  #qr svg {
+    display: block;
+    width: 200px;
+    height: 200px;
+  }
+
+  #qr .qr-url {
+    margin-top: 12px;
+    font-size: 0.95rem;
+    word-break: break-all;
+  }
+
+  #notice ul {
+    margin: 0;
+    padding-left: 1.4em;
+    color: var(--notice-fg);
+    background: var(--notice-bg);
+    border-radius: 8px;
+    padding: 16px 16px 16px 2em;
+  }
+
+  #notice li + li {
+    margin-top: 8px;
+  }
+
+  footer {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  footer a {
+    color: var(--accent);
+  }
+
+  @media (max-width: 400px) {
+    .wrap { padding: 16px 14px 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header id="intro">
+    <h1>ClimbAI</h1>
+    <p>ClimbAI は、撮影したクライミング動画を AI が解析し、コーチのようなフィードバックを届けるアプリです。お使いの端末に合った入手方法を下から選んでください。</p>
+  </header>
+
+  <!-- BR-DE-45: 主要要素に data-testid="dist-<section>-<element>" を付与する（本体アプリの Key('testid-...') 規約に相当） -->
+  <main>
+    <!-- BR-DE-39 / E-6: Android 導線（常に available） -->
+    <section id="android" data-testid="dist-android">
+      <h2>Android の方</h2>
+      <p class="version-label" data-testid="dist-version"></p>
+      <!-- BR-DE-41 / INV-10: 初期 href は常に有効な Releases latest ページ。JS 成功時のみ直リンクへ差し替える -->
+      <a class="button" data-testid="dist-android-download"
+         href="https://github.com/kei4eva4/climbai-dist/releases/latest">
+        APK をダウンロード
+      </a>
+      <p class="notice-inline" data-testid="dist-android-notice"></p>
+      <ol data-testid="dist-android-steps">
+        <li>上の［APK をダウンロード］ボタンから APK ファイル（<code>climbai-*.apk</code>）をダウンロードします</li>
+        <li>ダウンロード後に表示される確認で、このブラウザからのインストールを許可します（「提供元不明のアプリ」「不明なアプリのインストール」など、端末により表示は異なります）</li>
+        <li>インストールをタップします（Play ストア経由でないため警告が出ることがあります）</li>
+        <li>ホーム画面の ClimbAI を起動します</li>
+      </ol>
+    </section>
+
+    <!-- BR-DE-40 / E-6: iOS 導線。Bolt4 時点は pending。dist-ios-cta は URL 未設定の間 DOM に描画しない -->
+    <section id="ios" data-testid="dist-ios">
+      <h2>iPhone・iPad の方</h2>
+      <p class="pending-text" data-testid="dist-ios-pending">
+        iPhone・iPad 向けの配布は準備中です。公開まで少しお待ちください。手順は下のとおりです。
+      </p>
+      <ol data-testid="dist-ios-steps">
+        <li>App Store から TestFlight アプリをインストールします（事前に必要です）</li>
+        <li>上のボタンを開き、TestFlight で ClimbAI のテストに参加します</li>
+        <li>TestFlight から ClimbAI をインストールし、起動します</li>
+      </ol>
+    </section>
+
+    <!-- BR-DE-46 / INV-12: QR は公開ページ URL を符号化した静的 inline SVG -->
+    <!-- BR-DE-46: QR payload = https://kei4eva4.github.io/climbai-dist/ -->
+    <section id="qr" data-testid="dist-qr">
+      <h2>QR コードで開く</h2>
+      <p>この QR コードをスマートフォンのカメラで読み取ると、このページをスマートフォンで開けます。</p>
+      <div class="qr-svg-wrap">
+        <svg role="img" viewBox="0 0 37 37" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+          <title>ClimbAI 配布ページの QR コード</title>
+          <path fill="#ffffff" d="M0 0h37v37H0z"/>
+          <path stroke="#000000" d="M4 4.5h7m1 0h2m1 0h2m1 0h1m2 0h2m3 0h7M4 5.5h1m5 0h1m4 0h2m4 0h1m2 0h1m1 0h1m5 0h1M4 6.5h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h3m2 0h1m1 0h3m1 0h1M4 7.5h1m1 0h3m1 0h1m3 0h1m1 0h3m2 0h1m2 0h1m1 0h1m1 0h3m1 0h1M4 8.5h1m1 0h3m1 0h1m2 0h1m3 0h1m4 0h1m3 0h1m1 0h3m1 0h1M4 9.5h1m5 0h1m1 0h1m1 0h2m1 0h1m2 0h3m3 0h1m5 0h1M4 10.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M13 11.5h1m4 0h1m1 0h1M4 12.5h1m1 0h1m3 0h2m3 0h2m3 0h1m3 0h1m2 0h1m2 0h1m1 0h1M4 13.5h2m1 0h1m5 0h3m2 0h2m1 0h1m1 0h2m1 0h2m3 0h2M5 14.5h3m2 0h1m3 0h4m1 0h1m1 0h4m1 0h5m1 0h1M4 15.5h4m3 0h1m1 0h1m1 0h1m6 0h1m1 0h2m1 0h1m1 0h1M7 16.5h2m1 0h1m5 0h1m1 0h1m1 0h1m2 0h1m2 0h1m5 0h1M7 17.5h3m5 0h3m1 0h3m1 0h4m4 0h2M4 18.5h3m1 0h1m1 0h1m1 0h1m3 0h1m2 0h1m3 0h1m2 0h1m1 0h1m3 0h1M5 19.5h1m2 0h2m1 0h1m1 0h4m1 0h1m3 0h1m3 0h1m1 0h1M5 20.5h1m1 0h4m1 0h1m1 0h1m1 0h5m1 0h1m1 0h1m1 0h2m4 0h1M12 21.5h2m3 0h1m1 0h3m1 0h2m1 0h2m2 0h3M4 22.5h7m5 0h1m2 0h2m2 0h1m1 0h2m1 0h2m2 0h1M8 23.5h1m3 0h3m2 0h1m1 0h1m2 0h4m1 0h1M4 24.5h2m2 0h3m2 0h5m1 0h2m2 0h7m1 0h1M12 25.5h2m1 0h1m3 0h2m3 0h1m3 0h3m1 0h1M4 26.5h7m1 0h1m2 0h1m1 0h3m2 0h1m1 0h1m1 0h1m1 0h1m3 0h1M4 27.5h1m5 0h1m4 0h2m1 0h1m1 0h1m1 0h3m3 0h1M4 28.5h1m1 0h3m1 0h1m2 0h2m1 0h3m1 0h1m2 0h7m1 0h1M4 29.5h1m1 0h3m1 0h1m2 0h3m1 0h5m2 0h1m3 0h3m1 0h1M4 30.5h1m1 0h3m1 0h1m1 0h1m3 0h2m1 0h1m1 0h1m6 0h1m2 0h2M4 31.5h1m5 0h1m2 0h1m1 0h2m7 0h2m1 0h3M4 32.5h7m1 0h1m1 0h2m1 0h1m2 0h1m2 0h5m1 0h1m2 0h1"/>
+        </svg>
+      </div>
+      <p class="qr-url">https://kei4eva4.github.io/climbai-dist/</p>
+    </section>
+
+    <!-- FR-DE-16 / frontend-components §4: 注意書き4点（②③は上流 AC 外の追加、frontend-components §7参照） -->
+    <section id="notice" data-testid="dist-notice">
+      <h2>ご利用にあたっての注意</h2>
+      <ul>
+        <li>対応 OS: Android 12 以降。iPhone は iOS 15.5 以降に対応予定です（現在は準備中）</li>
+        <li>解析には、動画の内容が外部の生成 AI（Google Gemini）へ送信されます</li>
+        <li>利用回数に上限があり、混み合うと一時的に使えないことがあります</li>
+        <li>Play ストア／App Store の審査を通した配布ではない、知人向けの配布です</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>配布元: <a href="https://github.com/kei4eva4/climbai-dist">kei4eva4/climbai-dist</a></p>
+    <p>不具合・ご質問は <a href="https://github.com/kei4eva4/climbai-dist/issues">こちらの Issue</a> までお願いします。</p>
+  </footer>
+</div>
+
+<script>
+  // BR-DE-43: 配布リポの所在は単一定数に閉じる。API URL・フォールバック URL はここから導く
+  var DIST_REPO = 'kei4eva4/climbai-dist';
+  var FALLBACK_URL = 'https://github.com/' + DIST_REPO + '/releases/latest';
+  var API_URL = 'https://api.github.com/repos/' + DIST_REPO + '/releases/latest';
+
+  // BR-DE-40: iOS 公開リンクは1箇所の定数。Bolt3 完了時にこの値を差し替えるだけで有効化する
+  var IOS_TESTFLIGHT_URL = '';
+
+  // W-7 / BR-DE-37・38: UA 判定は「強調」のみに使う。判定不能・例外時は 'other'（既定の全表示）へ倒す
+  function detectPlatform() {
+    try {
+      var ua = navigator.userAgent || '';
+      var isIOS = /iPhone|iPad|iPod/i.test(ua)
+        || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1); // BR-DE-38: iPadOS 13+ 対策
+      var isAndroid = /Android/i.test(ua);
+      if (isAndroid) { return 'android'; }
+      if (isIOS) { return 'ios'; }
+      return 'other';
+    } catch (e) {
+      console.warn('[climbai-dist] UA detection failed:', e);
+      return 'other';
+    }
+  }
+
+  // BR-DE-37: display:none で導線を消さない。並べ替えと強調クラス付与のみを行う
+  function applyPlatform(platform) {
+    var main = document.querySelector('main');
+    var android = document.getElementById('android');
+    var ios = document.getElementById('ios');
+    if (!main || !android || !ios) { return; }
+    if (platform === 'android') {
+      android.classList.add('is-primary');
+      main.insertBefore(android, main.firstElementChild);
+    } else if (platform === 'ios') {
+      ios.classList.add('is-primary');
+      main.insertBefore(ios, main.firstElementChild);
+    }
+    // 'other' の場合は何もしない（既定の等価表示のまま）
+  }
+
+  // BR-DE-40: IOS_TESTFLIGHT_URL が空の間は何もしない（pending 表示のまま = 安全側）
+  // 値が入ったら CTA を描画し、pending 表示を取り除く
+  function applyIosAvailability() {
+    if (!IOS_TESTFLIGHT_URL) { return; }
+    var pending = document.querySelector('[data-testid="dist-ios-pending"]');
+    if (!pending || !pending.parentNode) { return; }
+    var cta = document.createElement('a');
+    cta.className = 'button';
+    cta.href = IOS_TESTFLIGHT_URL;
+    cta.setAttribute('data-testid', 'dist-ios-cta');
+    cta.textContent = 'TestFlight で参加する';
+    pending.parentNode.insertBefore(cta, pending);
+    pending.parentNode.removeChild(pending);
+  }
+
+  // W-8 / BR-DE-41・42: 最新版直リンクの解決。失敗時は初期 href（Releases latest）を据え置く
+  async function resolveLatestRelease() {
+    var link = document.querySelector('[data-testid="dist-android-download"]');
+    var versionLabel = document.querySelector('[data-testid="dist-version"]');
+    var notice = document.querySelector('[data-testid="dist-android-notice"]');
+    try {
+      var res = await fetch(API_URL, { headers: { Accept: 'application/vnd.github+json' } });
+      if (!res.ok) { throw new Error('status ' + res.status); } // 403/429 レート制限・404 もここに集約
+      var json = await res.json();
+      var assets = json && json.assets ? json.assets : [];
+      var asset = assets.find(function (a) { return /^climbai-.*\.apk$/.test(a.name); });
+      if (!asset) { throw new Error('apk asset not found'); }
+      if (link) { link.href = asset.browser_download_url; }
+      if (versionLabel) { versionLabel.textContent = json.tag_name; }
+    } catch (e) {
+      // BR-DE-42: 二層エラー。利用者向けは日本語で次の行動を示し、詳細は console へ
+      if (notice) {
+        notice.textContent = '最新版の自動取得に失敗しました。上のボタンから Releases ページを開き、'
+          + '一番上の版の .apk ファイルを選んでください。';
+      }
+      console.warn('[climbai-dist] release resolution failed:', e);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    try {
+      applyPlatform(detectPlatform());
+    } catch (e) {
+      console.warn('[climbai-dist] platform highlight failed:', e);
+    }
+    try {
+      applyIosAvailability();
+    } catch (e) {
+      console.warn('[climbai-dist] iOS availability update failed:', e);
+    }
+    // 非同期・ページ表示をブロックしない（await しない）
+    resolveLatestRelease();
+  });
+</script>
+</body>
+</html>
