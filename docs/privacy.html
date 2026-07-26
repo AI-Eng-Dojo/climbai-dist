@@ -1,0 +1,149 @@
+<!doctype html>
+<!-- BR-DE-58: 配布ページ（index.html）と同じ制約を継承する単一ファイル完結ページ。
+     外部リソース参照ゼロ・lang="ja"・コントラスト AA・スマートフォン幅で横スクロールしない -->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClimbAI プライバシーポリシー</title>
+<!--
+  BR-DE-58: このページは単一 HTML ファイルで完結する。
+  外部 CSS / JS / Web フォント / 外部画像への参照を持たない（index.html と同じ制約）。
+-->
+<style>
+  /* index.html と同じ配色・CSS 変数を採用（コントラスト AA 実測は index.html のコメント参照） */
+  :root {
+    --fg: #1a1a1a;
+    --muted: #4b5563;
+    --bg: #ffffff;
+    --panel-bg: #f8fafc;
+    --panel-fg: #0f172a;
+    --border: #e2e8f0;
+    --accent: #1d4ed8;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN",
+      "Hiragino Sans", Meiryo, sans-serif; /* Web フォント不使用 */
+    line-height: 1.7;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 8px;
+    color: var(--panel-fg);
+  }
+
+  .updated {
+    margin: 0 0 28px;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  section {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    background: var(--panel-bg);
+  }
+
+  section h2 {
+    margin: 0 0 12px;
+    font-size: 1.15rem;
+    color: var(--panel-fg);
+  }
+
+  section p,
+  section ul {
+    margin: 0;
+  }
+
+  section ul {
+    padding-left: 1.4em;
+  }
+
+  section li + li {
+    margin-top: 8px;
+  }
+
+  footer {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.95rem;
+  }
+
+  footer a,
+  section a {
+    color: var(--accent);
+  }
+
+  /* フォーカスリングを打ち消さない（index.html と同じ方針） */
+  a:focus-visible {
+    outline: 3px solid #1d4ed8;
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 400px) {
+    .wrap { padding: 16px 14px 40px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 data-testid="privacy-title">ClimbAI プライバシーポリシー</h1>
+  <p class="updated" data-testid="privacy-updated">最終更新日: 2026年7月26日</p>
+
+  <main>
+    <section data-testid="privacy-local">
+      <h2>端末内に留まる情報</h2>
+      <p>保存したトライ（動画の参照・評価結果・骨格指標）は、お使いの端末内のローカル DB に保存されます。この情報を配布元が読み取ることはありません。</p>
+    </section>
+
+    <section data-testid="privacy-external">
+      <h2>外部へ送信される情報</h2>
+      <p>解析を実行すると、選択した動画と解析結果が配布用の中継サーバを経由して Google の生成 AI（Gemini）へ送信され、評価が返ります。動画は Google 側の処理のために一時的に保持されます。</p>
+    </section>
+
+    <section data-testid="privacy-not-collected">
+      <h2>取得しない情報</h2>
+      <ul>
+        <li>アカウント登録は行いません</li>
+        <li>広告 ID は取得しません</li>
+        <li>位置情報は取得しません</li>
+        <li>利用状況の収集（分析・トラッキング）は行いません</li>
+      </ul>
+    </section>
+
+    <section data-testid="privacy-contact">
+      <h2>問い合わせ先</h2>
+      <p>不具合・ご質問は <a href="https://github.com/kei4eva4/climbai-dist/issues">配布リポの Issue</a> までお願いします。</p>
+    </section>
+  </main>
+
+  <footer data-testid="privacy-back">
+    <p><a href="index.html">← 配布ページへ戻る</a></p>
+  </footer>
+</div>
+</body>
+</html>
