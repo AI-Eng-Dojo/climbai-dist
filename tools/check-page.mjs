@@ -31,7 +31,7 @@ function hasLangJa(pageHtml) {
 // 外部リソース参照ゼロ（BR-DE-36 / BR-DE-58）
 //   - <link rel=stylesheet> / <script src> / <img src> は0件
 //   - href=/src= が http(s) で始まる場合、GitHub / GitHub Pages ドメイン以外は0件
-const ALLOWED_HOST_PATTERN = /^https?:\/\/(github\.com|api\.github\.com|kei4eva4\.github\.io)\//i;
+const ALLOWED_HOST_PATTERN = /^https?:\/\/(github\.com|api\.github\.com|ai-eng-dojo\.github\.io)\//i;
 const FORBIDDEN_TAG_PATTERNS = [
   { name: '<link rel="stylesheet">', re: /<link[^>]+rel=["']?stylesheet["']?[^>]*>/i },
   { name: '<script src=...>', re: /<script[^>]+src=/i },
@@ -123,7 +123,7 @@ check(
 );
 
 // 4. Android ボタンの初期 href が Releases latest ページである（INV-10）
-const FALLBACK_URL = 'https://github.com/kei4eva4/climbai-dist/releases/latest';
+const FALLBACK_URL = 'https://github.com/AI-Eng-Dojo/climbai-dist/releases/latest';
 const androidHrefMatch =
   html.match(/data-testid="dist-android-download"[^>]*\shref="([^"]+)"/i) ||
   html.match(/href="([^"]+)"[^>]*\sdata-testid="dist-android-download"/i);
@@ -141,7 +141,7 @@ const qrSectionMatch = html.match(/<section id="qr"[\s\S]*?<\/section>/i);
 let displayedUrl = null;
 if (qrSectionMatch) {
   const urlInSection = qrSectionMatch[0].match(
-    /https:\/\/kei4eva4\.github\.io\/climbai-dist\/?/
+    /https:\/\/ai-eng-dojo\.github\.io\/climbai-dist\/?/
   );
   displayedUrl = urlInSection ? urlInSection[0] : null;
 }

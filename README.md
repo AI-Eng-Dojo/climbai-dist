@@ -2,22 +2,20 @@
 
 ClimbAI の配布用リポジトリ（Releases に Android APK を添付・公開ページを配信）。
 
-<!-- BR-DE-34: 配布の正はこのリポジトリ（kei4eva4/climbai-dist）に確定する -->
+<!-- BR-DE-34: 配布の正はこのリポジトリ（AI-Eng-Dojo/climbai-dist）に確定する -->
 
 ## 公開ページ
 
-正の配布 URL は **https://kei4eva4.github.io/climbai-dist/** （このリポジトリの `docs/index.html`
+正の配布 URL は **https://ai-eng-dojo.github.io/climbai-dist/** （このリポジトリの `docs/index.html`
 を GitHub Pages で配信。Source = `main` ブランチの `/docs`）。
 
 Android の APK は、このページのボタンから直接、または本リポジトリの
-[Releases](https://github.com/kei4eva4/climbai-dist/releases) から入手できる。
+[Releases](https://github.com/AI-Eng-Dojo/climbai-dist/releases) から入手できる。
 
-## org 側リポジトリについて
-
-<!-- BR-DE-34: org 側の空リポは配布経路として使わない（誤配布防止） -->
-
-`AI-Eng-Dojo/climbai-dist`（org 側）は配布には**使わない**。配布の正は常にこの個人アカウント配下の
-`kei4eva4/climbai-dist` である。
+> 2026-07-27: `kei4eva4/climbai-dist`（個人アカウント）から org 側のリリースアップロード権限が
+> 取得できたため、本リポジトリへ transfer 済み。旧 Pages URL `https://kei4eva4.github.io/climbai-dist/`
+> は github.io ドメインの性質上リダイレクトされず 404 になる（`github.com/kei4eva4/climbai-dist` への
+> リポジトリパスは自動リダイレクトされるが、Pages の配信ドメインは対象外）。
 
 ## このリポジトリに置いてよいもの
 
