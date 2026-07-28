@@ -155,8 +155,7 @@ check(
 const secretCheck = noSecretPatterns(html);
 check('6. 秘密パターン0件（INV-9）', secretCheck.ok, secretCheck.detail);
 
-// --- 項目7〜8（BR-DE-59 / BR-DE-58。IOS_TESTFLIGHT_URL の検査はここに含めない — ---
-// --- 公開リンク発行後に別途追加する） ---------------------------------------
+// --- 項目7〜8（BR-DE-59 / BR-DE-58） ---------------------------------------
 
 // 7. index.html から privacy.html への相対リンクが存在する（BR-DE-59）
 const hasPrivacyLink = /href="privacy\.html"/.test(html);
@@ -189,6 +188,17 @@ if (!privacyExists) {
       .join(' / ')
   );
 }
+
+// 9. IOS_TESTFLIGHT_URL が空でなく https://testflight.apple.com/ で始まる（BR-DE-66 / BR-DE-67）
+//    ※ dist-ios-cta は JS が実行時に付与する属性で静的 HTML には現れないため、項目2の期待は反転しない
+const iosUrlMatch = html.match(/var IOS_TESTFLIGHT_URL = '([^']*)'/);
+const iosUrl = iosUrlMatch ? iosUrlMatch[1] : '';
+const iosUrlOk = !!iosUrl && iosUrl.startsWith('https://testflight.apple.com/');
+check(
+  '9. IOS_TESTFLIGHT_URL が空でなく https://testflight.apple.com/ で始まる（BR-DE-66/67）',
+  iosUrlOk,
+  iosUrlOk ? '' : `IOS_TESTFLIGHT_URL の値: ${iosUrlMatch ? `"${iosUrl}"` : '見つからない'}`
+);
 
 let allPass = true;
 for (const r of results) {
